@@ -1,8 +1,20 @@
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI
+from sqlmodel import Session
+
 from app.schemas import PayloadCreate, PayloadRead
 from app.utils import generate_output
+from app.database import init_db,engine
 
 app = FastAPI()
+
+@app.on_event("startup")
+def on_startup():
+    init_db()
+
+def get_session():
+    with Session(engine) as session:
+        yield session
+
 @app.get("/health", tags=["Health"])
 def health_check():
     return {"status": "ok", "message": "Service is running"}
