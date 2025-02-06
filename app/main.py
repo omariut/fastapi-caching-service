@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI,Depends
 from sqlmodel import Session
 
 from app.schemas import PayloadCreate, PayloadRead
@@ -21,8 +21,8 @@ def health_check():
 
 
 @app.post("/payload", response_model=PayloadRead)
-async def create_payload(payload: PayloadCreate):
+async def create_payload(payload: PayloadCreate,session: Session = Depends(get_session)):
     list1 = payload.list_1
     list2 = payload.list_2
-    output = generate_output(list1, list2)
+    output = generate_output(list1, list2,session)
     return PayloadRead(output=output)
