@@ -1,10 +1,10 @@
-from fastapi import FastAPI,Depends
+from fastapi import FastAPI,Depends,HTTPException
 from sqlmodel import Session
 
 from app.schemas import PayloadCreate, PayloadRead
 from app.utils import generate_output
 from app.database import init_db,engine
-from app.crud import save_db_payload
+from app.crud import save_db_payload,get_db_payload_by_id
 app = FastAPI()
 
 @app.on_event("startup")
@@ -27,3 +27,10 @@ async def create_payload(payload: PayloadCreate,session: Session = Depends(get_s
     output = generate_output(list1, list2,session)
     db_payload=save_db_payload(output,session)
     return db_payload
+
+@app.get("/payload/{payload_id}", response_model=PayloadRead)
+def read_payload(payload_id: int, session: Session = Depends(get_session)):
+    payload = get_db_payload_by_id(payload_id,session)
+    if not payload:
+        raise HTTPException(status_code=404, detail="Payload not found")
+    return payload
