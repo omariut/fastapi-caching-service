@@ -4,7 +4,7 @@ from sqlmodel import Session
 from app.schemas import PayloadCreate, PayloadRead
 from app.utils import generate_output
 from app.database import init_db,engine
-
+from app.crud import save_db_payload
 app = FastAPI()
 
 @app.on_event("startup")
@@ -25,4 +25,5 @@ async def create_payload(payload: PayloadCreate,session: Session = Depends(get_s
     list1 = payload.list_1
     list2 = payload.list_2
     output = generate_output(list1, list2,session)
-    return PayloadRead(output=output)
+    db_payload=save_db_payload(output,session)
+    return db_payload

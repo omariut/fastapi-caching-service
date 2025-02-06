@@ -7,5 +7,5 @@ class PayloadCreate(BaseModel):
     list_2: List[str]
 
 class PayloadRead(BaseModel):
-    id: uuid.UUID = uuid.uuid4()
+    id: int
     output: str
