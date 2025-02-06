@@ -3,7 +3,7 @@ from app.transformer import transformer_function
 from app.models import TransformedString
 
 def save_db_transformed_string(text:str, session: Session):
-    transformed_text=transformer_function(text)
+    transformed_text=transformer_function(text) # get transformed_text from transformer_function (simulating external service)
     ts = TransformedString(original=text, transformed=transformed_text)
     session.add(ts)
     session.commit()
